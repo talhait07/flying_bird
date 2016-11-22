@@ -13,7 +13,7 @@ import com.flying.bird.sprites.Tube;
  */
 
 public class PlayState extends State {
-    private static final int TUBE_SPACING = 20;
+    private static final int TUBE_SPACING = 100;
     private static final int TUBE_COUNT = 4;
 
     private Bird bird;
@@ -24,9 +24,9 @@ public class PlayState extends State {
         super(gsm);
         bird = new Bird(50,200);
         cam.setToOrtho(false, PlayBird.WIDTH / 2, PlayBird.HEIGHT / 2);
-        bg = new Texture("bg.jpg");
+        bg = new Texture("bg.png");
         tubes = new Array<Tube>();
-        for (int i = 1; i<= TUBE_COUNT + 1; i++){
+        for (int i = 1; i <= TUBE_COUNT + 1; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
         }
     }
@@ -42,9 +42,9 @@ public class PlayState extends State {
     public void update(float dt) {
         handleInput();
         bird.update(dt);
-        cam.position.x = bird.getPosition().x + 80;
+        cam.position.x = (bird.getPosition().x) + 80;
         for(Tube tube : tubes){
-            if(cam.position.x - (cam.viewportWidth / 2 ) > tube.getPosTopTube().x + tube.getTopTube().getWidth());{
+            if(cam.position.x - (cam.viewportWidth / 2 ) > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
                 tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
             }
         }
