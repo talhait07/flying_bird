@@ -12,9 +12,9 @@ import java.util.Random;
  */
 
 public class Tube {
-    public static final int TUBE_WIDTH = 50;
+    public static final int TUBE_WIDTH = 44;
 
-    private static final int FLACTUATE = 20;
+    private static final int FLACTUATE = 130;
     private static final int TUBE_GAP = 100;
     private static final int LOWEROPPENING = 120;
 
@@ -42,13 +42,13 @@ public class Tube {
         topTube = new Texture("toptube.png");
         bottomTube = new Texture("bottomtube.png");
         rand = new Random();
-        posTopTube = new Vector2(x, rand.nextInt(FLACTUATE + TUBE_GAP + LOWEROPPENING));
+        posTopTube = new Vector2(x, rand.nextInt(FLACTUATE) + TUBE_GAP + LOWEROPPENING);
         posBtmTube = new Vector2(x, posTopTube.y - TUBE_GAP - bottomTube.getHeight());
 
     }
 
     public void reposition( float x){
-        posTopTube.set(x, rand.nextInt(FLACTUATE + TUBE_GAP + LOWEROPPENING));
+        posTopTube.set(x, rand.nextInt(FLACTUATE) + TUBE_GAP + LOWEROPPENING);
         posBtmTube.set(x, posTopTube.y - TUBE_GAP - bottomTube.getHeight());
     }
 }
