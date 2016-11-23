@@ -71,4 +71,13 @@ public class Bird {
         texture.dispose();
         flap.dispose();
     }
+
+    public float getRotation() {
+        if (velocity.y >= 45)
+            return 45F;
+        if (velocity.y < -45)
+            return -45F;
+        return velocity.y;
+    }
+
 }
