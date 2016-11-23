@@ -13,8 +13,8 @@ import com.flying.bird.sprites.Tube;
  */
 
 public class PlayState extends State {
-    private static final int TUBE_SPACING = 100;
-    private static final int TUBE_COUNT = 4;
+    private static final int TUBE_SPACING = 120;
+    private static final int TUBE_COUNT = 3;
 
     private Bird bird;
     private Texture bg;
@@ -29,6 +29,7 @@ public class PlayState extends State {
         for (int i = 1; i <= TUBE_COUNT + 1; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
         }
+        this.gsm = gsm;
     }
 
     @Override
@@ -43,9 +44,14 @@ public class PlayState extends State {
         handleInput();
         bird.update(dt);
         cam.position.x = (bird.getPosition().x) + 80;
-        for(Tube tube : tubes){
+        for(int i = 0; i < tubes.size; i++ ){
+            Tube tube = tubes.get(i);
             if(cam.position.x - (cam.viewportWidth / 2 ) > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
                 tube.reposition(tube.getPosTopTube().x + ((Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT));
+            }
+
+            if(tube.collides(bird.getBounds())){
+                gsm.set(new PlayState(gsm));
             }
         }
         cam.update();
@@ -67,6 +73,11 @@ public class PlayState extends State {
 
     @Override
     public void dispose() {
-//        bird.dispose();
+        bird.dispose();
+        bg.dispose();
+        for(Tube tube : tubes){
+            tube.dispose();
+        }
+        System.out.println("play state disposed");
     }
 }
