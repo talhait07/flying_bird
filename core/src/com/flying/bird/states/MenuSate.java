@@ -16,7 +16,9 @@ public class MenuSate extends State {
 
     public MenuSate(GameStateManager gsm) {
         super(gsm);
-        background = new Texture("bg.jpg");
+        cam.setToOrtho(false, PlayBird.WIDTH / 2, PlayBird.HEIGHT / 2);
+
+        background = new Texture("bg.png");
         playButton = new Texture("playbutton.png");
         this.gsm = gsm;
 
@@ -38,9 +40,10 @@ public class MenuSate extends State {
 
     @Override
     public void render(SpriteBatch sb) {
+        sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(background,0,0, PlayBird.WIDTH, PlayBird.HEIGHT);
-        sb.draw(playButton,(PlayBird.WIDTH/2 - playButton.getWidth()/2), PlayBird.HEIGHT / 2);
+        sb.draw(background,0,0);
+        sb.draw(playButton,cam.position.x - playButton.getWidth() / 2,cam.position.y);
         sb.end();
     }
 
