@@ -1,5 +1,7 @@
 package com.flying.bird.sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,13 +17,15 @@ import java.util.Random;
 public class Tube {
     public static final int TUBE_WIDTH = 52;
 
-    private static final int FLACTUATE = 120;
+    private static final int FLACTUATE = 130;
     private static final int TUBE_GAP = 100;
     private static final int LOWEROPPENING = 120;
 
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBtmTube;
     private Random rand;
+    private Sound collideSound;
+
 
     private Rectangle boundTop, boundBot;
 
@@ -50,6 +54,8 @@ public class Tube {
 
         boundTop = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
         boundBot = new Rectangle(posBtmTube.x, posBtmTube.y, bottomTube.getWidth(), bottomTube.getHeight());
+        collideSound = Gdx.audio.newSound(Gdx.files.internal("collide.mp3"));
+
 
     }
 
@@ -61,6 +67,8 @@ public class Tube {
     }
 
     public boolean collides(Rectangle player){
+        collideSound.play(0.5f);
+
         return player.overlaps(boundTop) || player.overlaps(boundBot);
 
     }
@@ -68,5 +76,6 @@ public class Tube {
     public void dispose(){
         topTube.dispose();
         bottomTube.dispose();
+        collideSound.dispose();
     }
 }
