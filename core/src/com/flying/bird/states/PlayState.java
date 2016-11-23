@@ -3,6 +3,7 @@ package com.flying.bird.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.flying.bird.PlayBird;
 import com.flying.bird.sprites.Bird;
@@ -15,16 +16,23 @@ import com.flying.bird.sprites.Tube;
 public class PlayState extends State {
     private static final int TUBE_SPACING = 120;
     private static final int TUBE_COUNT = 3;
+    private static final int GROUND_Y_OFFSET = -60;
 
     private Bird bird;
     private Texture bg;
+    private Texture ground;
     private Array<Tube> tubes;
+    private Vector2 groundPosition1,groundPosition2;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
         bird = new Bird(50,200);
         cam.setToOrtho(false, PlayBird.WIDTH / 2, PlayBird.HEIGHT / 2);
         bg = new Texture("bg.png");
+        ground = new Texture("ground.png");
+        groundPosition1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
+        groundPosition2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
+
         tubes = new Array<Tube>();
         for (int i = 1; i <= TUBE_COUNT + 1; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
@@ -54,6 +62,8 @@ public class PlayState extends State {
                 gsm.set(new PlayState(gsm));
             }
         }
+        if(bird.getPosition().y < ground.getHeight() + GROUND_Y_OFFSET)
+            gsm.set(new PlayState(gsm));
         cam.update();
     }
 
@@ -67,6 +77,8 @@ public class PlayState extends State {
             sb.draw(tube.getTopTube(), tube.getPosTopTube().x, tube.getPosTopTube().y);
             sb.draw(tube.getBottomTube(), tube.getPosBtmTube().x, tube.getPosBtmTube().y);
         }
+        sb.draw(ground, groundPosition1.x, groundPosition1.y);
+        sb.draw(ground, groundPosition2.x, groundPosition2.y);
         sb.end();
 
     }
@@ -79,5 +91,12 @@ public class PlayState extends State {
             tube.dispose();
         }
         System.out.println("play state disposed");
+    }
+
+    private void updateGround(){
+        if(cam.position.x- (cam.viewportWidth / 2) > groundPosition1.x + ground.getWidth()){
+            groundPosition1.add(ground.getWidth() * 2, 0);
+            groundPosition2.add(ground.getWidth() * 2, 0);
+        }
     }
 }
