@@ -29,8 +29,8 @@ public class PlayState extends State {
     private Array<Tube> tubes;
     private Vector2 groundPosition1,groundPosition2;
     private BitmapFont myFont;
+    private Sound collideSound;
 
-//    private Sound collideSound;
 
 
 
@@ -43,7 +43,8 @@ public class PlayState extends State {
         groundPosition1 = new Vector2(cam.position.x - cam.viewportWidth / 2, GROUND_Y_OFFSET);
         groundPosition2 = new Vector2((cam.position.x - cam.viewportWidth / 2) + ground.getWidth(), GROUND_Y_OFFSET);
         myFont = new BitmapFont();
-//        collideSound = Gdx.audio.newSound(Gdx.files.internal("collide.mp3"));
+        collideSound = Gdx.audio.newSound(Gdx.files.internal("collide.mp3"));
+
 
         tubes = new Array<Tube>();
         for (int i = 2; i <= TUBE_COUNT + 1; i++){
@@ -63,6 +64,7 @@ public class PlayState extends State {
     public void update(float dt) {
         handleInput();
         updateGround();
+        updateScore();
         bird.update(dt);
         cam.position.x = (bird.getPosition().x) + 80;
 
@@ -75,8 +77,7 @@ public class PlayState extends State {
             }
 
             if(tube.collides(bird.getBounds())){
-
-//                collideSound.play();
+                collideSound.play(0.5f);
                 SCORE = 0;
                 YOURSCORE = "score: " + SCORE;
                 System.out.println("initial score: "+ SCORE);
@@ -88,8 +89,10 @@ public class PlayState extends State {
                     System.out.println("score: "+ SCORE);
             }
         }
-        if(bird.getPosition().y < ground.getHeight() + GROUND_Y_OFFSET)
+        if(bird.getPosition().y < ground.getHeight() + GROUND_Y_OFFSET){
+            collideSound.play(0.5f);
             gsm.set(new PlayState(gsm));
+        }
         cam.update();
     }
 
@@ -98,8 +101,6 @@ public class PlayState extends State {
         sb.setProjectionMatrix(cam.combined);
         sb.begin();
         sb.draw(bg, cam.position.x - (cam.viewportWidth / 2),0);
-//        sb.draw(bird.getBird(), bird.getPosition().x,bird.getPosition().y);
-
         sb.draw(bird.getBird(), bird.getPosition().x, bird.getPosition().y,
                 bird.getBird().getRegionWidth()/2, bird.getBird().getRegionHeight()/2,
                 bird.getBird().getRegionWidth(), bird.getBird().getRegionHeight(), 1, 1, bird.getRotation());
@@ -113,8 +114,8 @@ public class PlayState extends State {
         sb.draw(ground, groundPosition1.x, groundPosition1.y);
         sb.draw(ground, groundPosition2.x, groundPosition2.y);
         myFont.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        myFont.setUseIntegerPositions(true);
-        myFont.draw(sb, YOURSCORE,50, 100);
+        myFont.setUseIntegerPositions(false);
+        myFont.draw(sb, YOURSCORE,groundPosition1.x - 50, groundPosition1.y + 100);
         sb.end();
 
     }
@@ -124,7 +125,7 @@ public class PlayState extends State {
         bird.dispose();
         bg.dispose();
         ground.dispose();
-//        collideSound.dispose();
+        collideSound.dispose();
         for(Tube tube : tubes){
             tube.dispose();
         }
@@ -132,6 +133,14 @@ public class PlayState extends State {
     }
 
     private void updateGround(){
+
+        if(cam.position.x - (cam.viewportWidth / 2) > groundPosition1.x + ground.getWidth())
+            groundPosition1.add(ground.getWidth() * 2, 0);
+        if(cam.position.x - (cam.viewportWidth / 2) > groundPosition2.x + ground.getWidth())
+            groundPosition2.add(ground.getWidth() * 2, 0);
+    }
+
+    private void updateScore(){
 
         if(cam.position.x - (cam.viewportWidth / 2) > groundPosition1.x + ground.getWidth())
             groundPosition1.add(ground.getWidth() * 2, 0);

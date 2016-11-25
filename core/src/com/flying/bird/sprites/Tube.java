@@ -24,7 +24,6 @@ public class Tube {
     private Texture topTube, bottomTube;
     private Vector2 posTopTube, posBtmTube;
     private Random rand;
-    private Sound collideSound;
 
 
     private Rectangle boundTop, boundBot;
@@ -49,25 +48,23 @@ public class Tube {
         topTube = new Texture("toptube.png");
         bottomTube = new Texture("bottomtube.png");
         rand = new Random();
-        posTopTube = new Vector2(x, rand.nextInt(FLACTUATE + TUBE_GAP + LOWEROPPENING));
+        posTopTube = new Vector2(x, rand.nextInt(FLACTUATE) + TUBE_GAP + LOWEROPPENING);
         posBtmTube = new Vector2(x, posTopTube.y - TUBE_GAP - bottomTube.getHeight());
 
         boundTop = new Rectangle(posTopTube.x, posTopTube.y, topTube.getWidth(), topTube.getHeight());
         boundBot = new Rectangle(posBtmTube.x, posBtmTube.y, bottomTube.getWidth(), bottomTube.getHeight());
-        collideSound = Gdx.audio.newSound(Gdx.files.internal("collide.mp3"));
 
 
     }
 
     public void reposition( float x){
-        posTopTube.set(x, rand.nextInt(FLACTUATE + TUBE_GAP + LOWEROPPENING));
+        posTopTube.set(x, rand.nextInt(FLACTUATE) + TUBE_GAP + LOWEROPPENING);
         posBtmTube.set(x, posTopTube.y - TUBE_GAP - bottomTube.getHeight());
         boundTop.setPosition(posTopTube.x, posTopTube.y);
         boundBot.setPosition(posBtmTube.x, posBtmTube.y);
     }
 
     public boolean collides(Rectangle player){
-        collideSound.play(0.5f);
 
         return player.overlaps(boundTop) || player.overlaps(boundBot);
 
@@ -76,6 +73,5 @@ public class Tube {
     public void dispose(){
         topTube.dispose();
         bottomTube.dispose();
-        collideSound.dispose();
     }
 }
