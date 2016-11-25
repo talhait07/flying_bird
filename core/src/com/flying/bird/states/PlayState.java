@@ -46,7 +46,7 @@ public class PlayState extends State {
 //        collideSound = Gdx.audio.newSound(Gdx.files.internal("collide.mp3"));
 
         tubes = new Array<Tube>();
-        for (int i = 1; i <= TUBE_COUNT + 1; i++){
+        for (int i = 2; i <= TUBE_COUNT + 1; i++){
             tubes.add(new Tube(i * (TUBE_SPACING + Tube.TUBE_WIDTH)));
         }
         this.gsm = gsm;
@@ -62,6 +62,7 @@ public class PlayState extends State {
     @Override
     public void update(float dt) {
         handleInput();
+        updateGround();
         bird.update(dt);
         cam.position.x = (bird.getPosition().x) + 80;
 
@@ -69,6 +70,7 @@ public class PlayState extends State {
             Tube tube = tubes.get(i);
             if(cam.position.x - (cam.viewportWidth / 2 ) > tube.getPosTopTube().x + tube.getTopTube().getWidth()){
                 int total_position = (int)tube.getPosTopTube().x + (Tube.TUBE_WIDTH + TUBE_SPACING) * TUBE_COUNT;
+
                 tube.reposition(total_position);
             }
 
@@ -121,6 +123,7 @@ public class PlayState extends State {
     public void dispose() {
         bird.dispose();
         bg.dispose();
+        ground.dispose();
 //        collideSound.dispose();
         for(Tube tube : tubes){
             tube.dispose();
@@ -129,9 +132,10 @@ public class PlayState extends State {
     }
 
     private void updateGround(){
-        if(cam.position.x- (cam.viewportWidth / 2) > groundPosition1.x + ground.getWidth()){
+
+        if(cam.position.x - (cam.viewportWidth / 2) > groundPosition1.x + ground.getWidth())
             groundPosition1.add(ground.getWidth() * 2, 0);
+        if(cam.position.x - (cam.viewportWidth / 2) > groundPosition2.x + ground.getWidth())
             groundPosition2.add(ground.getWidth() * 2, 0);
-        }
     }
 }
